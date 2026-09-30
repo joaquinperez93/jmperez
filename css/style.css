@@ -142,20 +142,8 @@ button:focus-visible {
 }
 
 /* Desde acá la imagen deja de adaptarse a su proporción natural
-   y pasa a llenar todo el alto disponible (recorte panorámico) */
+   y pasa a llenar el alto que le calcula js/main.js (recorte panorámico) */
 @media (min-width: 700px) {
-  .hero {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-
-  .hero-frame {
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-
   .hero-frame img {
     height: 100%;
     object-fit: cover;

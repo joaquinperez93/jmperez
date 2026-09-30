@@ -84,3 +84,31 @@ document.querySelectorAll('[data-carousel]').forEach(function (carousel) {
 
   goTo(0);
 });
+
+// Ajusta el alto de la imagen de portada (home) para que header + hero + pie
+// entren siempre en una sola pantalla, sin scroll — solo desde 700px de ancho.
+// Por debajo de eso, el navegador vuelve a mostrar la imagen a su tamaño natural.
+(function () {
+  var heroFrame = document.querySelector('.hero-frame');
+  if (!heroFrame) return;
+
+  var header = document.querySelector('.site-header');
+  var footer = document.querySelector('.site-footer');
+  var caption = document.querySelector('.hero-caption');
+
+  function ajustarHero() {
+    if (window.innerWidth < 700) {
+      heroFrame.style.height = ''; // mobile: tamaño natural, sin recorte
+      return;
+    }
+    var usado = (header ? header.offsetHeight : 0) +
+                (footer ? footer.offsetHeight : 0) +
+                (caption ? caption.offsetHeight : 0);
+    var disponible = window.innerHeight - usado;
+    heroFrame.style.height = Math.max(disponible, 240) + 'px';
+  }
+
+  window.addEventListener('resize', ajustarHero);
+  window.addEventListener('load', ajustarHero);
+  ajustarHero();
+})();
