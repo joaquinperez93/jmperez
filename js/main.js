@@ -86,8 +86,9 @@ document.querySelectorAll('[data-carousel]').forEach(function (carousel) {
 });
 
 // Ajusta el alto de la imagen de portada (home) para que header + hero + pie
-// entren siempre en una sola pantalla, sin scroll, en cualquier tamaño de pantalla.
-// El recorte (cover en desktop vs. contain en mobile) lo define el CSS.
+// entren siempre en una sola pantalla, sin scroll — solo desde 700px de ancho.
+// Por debajo de eso, la imagen vuelve a su tamaño natural (se adapta al ancho),
+// aceptando que puede haber algo de scroll en mobile.
 (function () {
   var heroFrame = document.querySelector('.hero-frame');
   if (!heroFrame) return;
@@ -97,11 +98,15 @@ document.querySelectorAll('[data-carousel]').forEach(function (carousel) {
   var caption = document.querySelector('.hero-caption');
 
   function ajustarHero() {
+    if (window.innerWidth < 700) {
+      heroFrame.style.height = ''; // mobile: tamaño natural
+      return;
+    }
     var usado = (header ? header.offsetHeight : 0) +
                 (footer ? footer.offsetHeight : 0) +
                 (caption ? caption.offsetHeight : 0);
     var disponible = window.innerHeight - usado;
-    heroFrame.style.height = Math.max(disponible, 200) + 'px';
+    heroFrame.style.height = Math.max(disponible, 240) + 'px';
   }
 
   window.addEventListener('resize', ajustarHero);
