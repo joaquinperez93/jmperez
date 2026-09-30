@@ -28,16 +28,27 @@
 
 html {
   scroll-behavior: smooth;
+  height: 100%;
 }
 
 body {
   margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 img { max-width: 100%; display: block; }
@@ -109,7 +120,6 @@ button:focus-visible {
 
 .hero-frame {
   width: 100%;
-  aspect-ratio: 21 / 9;
   background: var(--paper-raised);
   border-bottom: 1px solid var(--line);
   display: flex;
@@ -120,9 +130,7 @@ button:focus-visible {
 
 .hero-frame img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center; /* cambiá a p. ej. "center 30%" para mostrar más la parte de arriba */
+  height: auto;
   display: block;
 }
 
@@ -130,6 +138,33 @@ button:focus-visible {
   color: var(--ink-soft);
   font-size: 0.9rem;
   text-align: center;
+  padding: 3rem 1rem;
+}
+
+/* Desde acá la imagen deja de adaptarse a su proporción natural
+   y pasa a llenar todo el alto disponible (recorte panorámico) */
+@media (min-width: 700px) {
+  .hero {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .hero-frame {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .hero-frame img {
+    height: 100%;
+    object-fit: cover;
+    object-position: center; /* cambiá a p. ej. "center 30%" para mostrar más la parte de arriba */
+  }
+
+  .hero-frame .placeholder-label {
+    padding: 1rem;
+  }
 }
 
 .hero-caption {
@@ -243,7 +278,7 @@ button:focus-visible {
 /* ---------- Grillas de imágenes (páginas de proyecto) ---------- */
 
 .project-head {
-  padding: clamp(2.5rem, 7vw, 5rem) 0 2rem;
+  padding: clamp(1.5rem, 3.5vw, 2.5rem) 0 1.5rem;
   border-bottom: 1px solid var(--line);
 }
 
@@ -252,21 +287,22 @@ button:focus-visible {
   flex-wrap: wrap;
   gap: 0.4rem 1.25rem;
   color: var(--ink-soft);
-  font-size: 0.92rem;
-  margin-bottom: 1.1rem;
+  font-size: 0.88rem;
+  margin-bottom: 0.6rem;
 }
 
 .project-head h1 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.1rem, 5.5vw, 3.4rem);
-  margin: 0 0 1.1rem;
-  max-width: 20ch;
+  font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+  margin: 0 0 0.65rem;
+  max-width: 24ch;
 }
 
 .project-statement {
   max-width: 58ch;
   color: var(--ink-soft);
+  font-size: 0.95rem;
 }
 
 .plate-grid {
@@ -313,6 +349,87 @@ button:focus-visible {
   margin-top: 0.6rem;
   font-size: 0.85rem;
   color: var(--ink-soft);
+}
+
+/* ---------- Carrusel (páginas de proyecto) ---------- */
+
+.carousel {
+  position: relative;
+  padding: clamp(1.25rem, 3vw, 2rem) 0 clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.carousel-track {
+  position: relative;
+}
+
+.carousel-slide {
+  display: none;
+}
+
+.carousel-slide.is-active {
+  display: block;
+}
+
+.carousel .plate-frame {
+  aspect-ratio: 16 / 10;
+  max-height: 56vh;
+}
+
+.carousel .plate-frame img {
+  object-fit: contain;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3rem;
+  background: none;
+  border: none;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+}
+
+.carousel-btn:hover { opacity: 1; }
+.carousel-btn.prev { left: -0.25rem; justify-content: flex-start; }
+.carousel-btn.next { right: -0.25rem; justify-content: flex-end; }
+
+@media (min-width: 900px) {
+  .carousel-btn.prev { left: -3rem; }
+  .carousel-btn.next { right: -3rem; }
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.carousel-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--line);
+  cursor: pointer;
+}
+
+.carousel-dot.is-active { background: var(--ink); }
+
+.carousel-count {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin-top: 0.5rem;
 }
 
 /* ---------- Bio ---------- */
