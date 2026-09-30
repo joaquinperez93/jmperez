@@ -85,6 +85,68 @@ document.querySelectorAll('[data-carousel]').forEach(function (carousel) {
   goTo(0);
 });
 
+// Lightbox: clic en la imagen activa del carrusel para ampliarla.
+// Reutiliza los botones prev/next del carrusel para no duplicar el estado.
+(function () {
+  var lightbox = document.querySelector('[data-lightbox]');
+  var carousel = document.querySelector('[data-carousel]');
+  if (!lightbox || !carousel) return;
+
+  var lightboxImg = lightbox.querySelector('[data-lightbox-img]');
+  var closeBtn = lightbox.querySelector('[data-lightbox-close]');
+  var lightboxPrev = lightbox.querySelector('[data-lightbox-prev]');
+  var lightboxNext = lightbox.querySelector('[data-lightbox-next]');
+  var carouselPrev = carousel.querySelector('[data-carousel-prev]');
+  var carouselNext = carousel.querySelector('[data-carousel-next]');
+
+  function activeImg() {
+    var active = carousel.querySelector('.carousel-slide.is-active img');
+    return active || null;
+  }
+
+  function sync() {
+    var img = activeImg();
+    if (!img || !lightboxImg) return;
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+  }
+
+  function open() {
+    sync();
+    lightbox.classList.add('is-open');
+  }
+
+  function close() {
+    lightbox.classList.remove('is-open');
+  }
+
+  carousel.addEventListener('click', function (e) {
+    if (e.target.tagName === 'IMG' && e.target.closest('.carousel-slide.is-active')) {
+      open();
+    }
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  lightbox.addEventListener('click', function (e) {
+    if (e.target === lightbox) close(); // clic fuera de la imagen
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!lightbox.classList.contains('is-open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowRight' && carouselNext) carouselNext.click();
+    if (e.key === 'ArrowLeft' && carouselPrev) carouselPrev.click();
+  });
+
+  if (lightboxPrev) lightboxPrev.addEventListener('click', function () {
+    if (carouselPrev) carouselPrev.click();
+    sync();
+  });
+  if (lightboxNext) lightboxNext.addEventListener('click', function () {
+    if (carouselNext) carouselNext.click();
+    sync();
+  });
+})();
+
 // Ajusta el alto de la imagen de portada (home) para que header + hero + pie
 // entren siempre en una sola pantalla, sin scroll — solo desde 700px de ancho.
 // Por debajo de eso, la imagen vuelve a su tamaño natural (se adapta al ancho),
