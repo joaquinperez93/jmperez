@@ -32,3 +32,55 @@ document.querySelectorAll('#year').forEach(function (el) {
 
   applyFilter('all');
 })();
+
+// Carrusel de imágenes en páginas de proyecto
+// (busca cada <div class="carousel" data-carousel>; si no hay ninguno, no hace nada)
+document.querySelectorAll('[data-carousel]').forEach(function (carousel) {
+  var slides = carousel.querySelectorAll('.carousel-slide');
+  var dotsWrap = carousel.querySelector('[data-carousel-dots]');
+  var countEl = carousel.querySelector('.carousel-count');
+  var prevBtn = carousel.querySelector('[data-carousel-prev]');
+  var nextBtn = carousel.querySelector('[data-carousel-next]');
+  var current = 0;
+
+  if (!slides.length) return;
+
+  // Generar los puntitos
+  var dots = [];
+  if (dotsWrap) {
+    slides.forEach(function (_, i) {
+      var dot = document.createElement('button');
+      dot.className = 'carousel-dot';
+      dot.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
+      dot.addEventListener('click', function () { goTo(i); });
+      dotsWrap.appendChild(dot);
+      dots.push(dot);
+    });
+  }
+
+  function goTo(index) {
+    slides[current].classList.remove('is-active');
+    if (dots[current]) dots[current].classList.remove('is-active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('is-active');
+    if (dots[current]) dots[current].classList.add('is-active');
+    if (countEl) countEl.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', function () { goTo(current - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { goTo(current + 1); });
+
+  // Swipe táctil (celular)
+  var touchStartX = null;
+  carousel.addEventListener('touchstart', function (e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  carousel.addEventListener('touchend', function (e) {
+    if (touchStartX === null) return;
+    var diff = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(diff) > 40) goTo(current + (diff < 0 ? 1 : -1));
+    touchStartX = null;
+  });
+
+  goTo(0);
+});
